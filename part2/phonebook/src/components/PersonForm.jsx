@@ -1,5 +1,4 @@
 import personService from '../services/persons'
-import Notification from './Notification'
 
 const PersonForm = (prop) => {
     const handleNameChange = (event) => {
