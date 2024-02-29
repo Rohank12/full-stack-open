@@ -1,4 +1,5 @@
 import personService from '../services/persons'
+import Notification from './Notification'
 
 const PersonForm = (prop) => {
     const handleNameChange = (event) => {
@@ -25,7 +26,16 @@ const PersonForm = (prop) => {
             prop.setPersons(prop.persons.map(person => person.id !== updatePerson.id ? person : returnedPerson))
             prop.setNewName('')
             prop.setNewNumber('')
-          
+            prop.setMessage({ content: `Updated ${prop.newName} with new number ${prop.newNumber}`, type: 'success'  })
+            setTimeout(() => {
+              prop.setMessage(null)
+            }, 5000)
+          }).catch(error => {
+            console.log("Error deleting person:", error)
+            prop.setMessage({ content: `Information of ${prop.newName} has already been removed from server`, type: 'error' })
+            setTimeout(() => {
+              prop.setMessage(null)
+            }, 5000)
           })
         }
       } else {
@@ -34,6 +44,10 @@ const PersonForm = (prop) => {
           prop.setNewName('')
           prop.setNewNumber('')
         })
+        prop.setMessage ({ content: `Added ${prop.newName}`, type: 'success' })
+        setTimeout(() => {
+          prop.setMessage(null)
+        }, 5000)
       }
     }
   
