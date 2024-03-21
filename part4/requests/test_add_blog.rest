@@ -1,0 +1,19 @@
+POST http://localhost:3003/api/blogs/
+Content-Type: application/json
+
+{
+  "title": "My Blog Test",
+  "author": "John Blog",
+  "url": "http://www.blog.com",
+  "likes": 0
+}
+###
+POST http://localhost:3003/api/blogs/
+Content-Type: application/json
+
+{
+  "title": "Blog 2",
+  "author": "Yoda",
+  "url": "http://www.blogofyoda.com",
+  "likes": 30
+}
