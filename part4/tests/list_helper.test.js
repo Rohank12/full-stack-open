@@ -94,12 +94,12 @@ describe('favorite blog', () => {
 
   test('with empty list', () => {
     const favBlog = listHelper.favoriteBlog([])
-    assert.deepEqual(favBlog, {})
+    assert.deepStrictEqual(favBlog, {})
   })
 
   test('with one blog', () => {
     const favBlog = listHelper.favoriteBlog(listWithOneBlog)
-    assert.deepEqual(favBlog, {
+    assert.deepStrictEqual(favBlog, {
       _id: '5a422aa71b54a676234d17f8',
       title: 'Go To Statement Considered Harmful',
       author: 'Edsger W. Dijkstra',
@@ -111,7 +111,7 @@ describe('favorite blog', () => {
 
   test('with many blogs', () => {
     const favBlog = listHelper.favoriteBlog(listWithBlogs)
-    assert.deepEqual(favBlog, {
+    assert.deepStrictEqual(favBlog, {
       _id: "5a422b3a1b54a676234d17f9",
       title: "Canonical string reduction",
       author: "Edsger W. Dijkstra",
@@ -126,12 +126,12 @@ describe("most blogs done by an author", () => {
 
   test('with empty list', () => {
     const result = listHelper.mostBlogs([])
-    assert.deepEqual(result, {})
+    assert.deepStrictEqual(result, {})
   })
 
   test('with one blog', () => {
     const result = listHelper.mostBlogs(listWithOneBlog)
-    assert.deepEqual(result, {
+    assert.deepStrictEqual(result, {
       'author': 'Edsger W. Dijkstra',
       'blogs': 1
     })
@@ -139,7 +139,7 @@ describe("most blogs done by an author", () => {
 
   test('with many blogs', () => {
     const result = listHelper.mostBlogs(listWithBlogs)
-    assert.deepEqual(result, {
+    assert.deepStrictEqual(result, {
       'author': 'Robert C. Martin',
       'blogs': 3
     })
@@ -149,19 +149,19 @@ describe("most blogs done by an author", () => {
 describe("most likes done by an author", () => {
   test('with empty list', () => {
     const result = listHelper.mostLikes([])
-    assert.deepEqual(result, {})
+    assert.deepStrictEqual(result, {})
   })
 
   test('with one blog', () => {
     const result = listHelper.mostLikes(listWithOneBlog)
-    assert.deepEqual(result, {
+    assert.deepStrictEqual(result, {
       'author': 'Edsger W. Dijkstra',
       'likes': 5
     })
   })
   test('with many blogs', () => {
     const result = listHelper.mostLikes(listWithBlogs)
-    assert.deepEqual(result, {
+    assert.deepStrictEqual(result, {
       'author': 'Edsger W. Dijkstra',
       'likes': 17
     })
