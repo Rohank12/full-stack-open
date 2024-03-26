@@ -1,0 +1,7 @@
+DELETE http://localhost:3003/api/blogs/6602f245e07955061549d235
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2NjAyZTc2MDljMGNhZDRkNTJkZjVjMmEiLCJpYXQiOjE3MTE0NjgzNzV9.bI5KBt22TuFEluWUyzobgg6TCK2A-dYPWSG19Gcqvbw
+### wrong token
+DELETE http://localhost:3003/api/blogs/6602f0c188f97cdc95d99367
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjYwMmU3MWU5YzBjYWQ0ZDUyZGY1YzI0IiwiaWF0IjoxNzExNDY5NzE5fQ.yiiw6AzVaUSo8HuyhFSuwhQp3eI9GrW17CYpbkZC3F8
