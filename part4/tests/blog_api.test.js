@@ -5,6 +5,7 @@ const helper = require('./test_helper')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -36,7 +37,47 @@ describe('when getting the blog(s) from the database', () => {
     })
 })
 
+describe('when doing a user login ', () => {
+    beforeEach(async() => {
+        await User.deleteMany({})
+        const user = {
+            username: 'root',
+            password: 'Pa55word'
+        }
+        await api
+            .post('/api/users')
+            .send(user)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+    })
+    test('a user can login', async () => {
+        const user = {
+            username: 'root',
+            password: 'Pa55word'
+        }
+        const response = await api
+            .post('/api/login')
+            .send(user)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+        assert(response.body.token)
+    })
+})
+
 describe('when adding a blog to the database', () => {
+    let token = ''
+    beforeEach(async () => {
+        const user = {
+            username: 'root',
+            password: 'Pa55word'
+        }
+        let response = await api
+            .post('/api/login')
+            .send(user)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+        token = response.body.token
+    })
     test('a valid blog can be added', async () => {
         const newBlog = {
             title: "Canonical string reduction",
@@ -44,10 +85,10 @@ describe('when adding a blog to the database', () => {
             url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
             likes: 12,
         }
-
         await api
             .post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -67,6 +108,7 @@ describe('when adding a blog to the database', () => {
         await api
             .post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -89,6 +131,7 @@ describe('when adding a blog to the database', () => {
         await api
             .post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
             .expect(400)
 
         const blogs = await api.get('/api/blogs')
@@ -104,6 +147,7 @@ describe('when adding a blog to the database', () => {
         await api
             .post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
             .expect(400)
 
         const blogs = await api.get('/api/blogs')
@@ -117,26 +161,88 @@ describe('when adding a blog to the database', () => {
         await api
             .post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
             .expect(400)
 
         const blogs = await api.get('/api/blogs')
         assert.strictEqual(blogs.body.length, helper.initialBlog.length)
     })
+
+    test('cannot add when token is missing', async () => {
+        const newBlog = {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+            likes: 12,
+        }
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+        
+        const blogs = await helper.getBlogDb()
+        assert.strictEqual(blogs.length, helper.initialBlog.length)
+    })
+
+    test('cannot add when token is invalid', async () => {
+        const newBlog = {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+            likes: 12,
+        }
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .set('Authorization', 'Bearer wrongtoken010')
+            .expect(400)
+        
+        const blogs = await helper.getBlogDb()
+        assert.strictEqual(blogs.length, helper.initialBlog.length)
+    })
 })
 
 describe('when deleting a blog from the database', () => {
+    let token = ''
+    // first creating a new blog and adding
+    beforeEach(async () => {
+        const user = {
+            username: 'root',
+            password: 'Pa55word'
+        }
+        let response = await api
+            .post('/api/login')
+            .send(user)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+        token = response.body.token
+
+        const newBlog = {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+            likes: 12,
+        }
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+    })
 
     test('a blog can be deleted', async () => {
         const blogs = await api.get('/api/blogs')
-        const blogToDelete = blogs.body[0]
+        const blogToDelete = blogs.body[1]
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
 
         const blogsAfterDeletion = await api.get('/api/blogs')
 
-        assert.strictEqual(blogsAfterDeletion.body.length, helper.initialBlog.length - 1)
+        assert.strictEqual(blogsAfterDeletion.body.length, helper.initialBlog.length)
     })
 })
 
